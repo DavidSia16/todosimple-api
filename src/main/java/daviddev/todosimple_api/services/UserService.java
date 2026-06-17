@@ -5,18 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import daviddev.todosimple_api.models.User;
-import daviddev.todosimple_api.repository.TaskRepository;
 import daviddev.todosimple_api.repository.UserRepository;
 import jakarta.transaction.Transactional;
-
+git 
 @Service
 public class UserService {
     @Autowired
     private  UserRepository userRepository;
 
-    @Autowired
-    private  TaskRepository taskRepository;
-
+   
 
 
     public User findById(Long id) {
@@ -30,7 +27,6 @@ public class UserService {
     public User create(User obj) {
         obj.setId(null);
         obj = this.userRepository.save(obj);
-        this.taskRepository.saveAll(obj.getTasks());
         return obj;
     }
 
@@ -47,7 +43,7 @@ public class UserService {
             this.userRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException("Não é possível excluir o usuário com id: " + id +
-             "ainda há entidades " + this.taskRepository.getById(id) + " associadas a ele!");
+             "ainda há entidades ");
         }
     }
 
