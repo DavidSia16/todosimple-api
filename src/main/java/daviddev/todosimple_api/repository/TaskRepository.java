@@ -3,6 +3,7 @@ package daviddev.todosimple_api.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+//import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import daviddev.todosimple_api.models.Task;   
@@ -10,7 +11,7 @@ import daviddev.todosimple_api.models.Task;
 @Repository
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
-    List<Task> findByUser_Id(Long id);  
+    List<Task> findByUser_Id(Long Id);  
 
     //@Query("SELECT t from Task t where t.user.id = : userId")
     //List<Task> findByUserId(@Param("userId") Long userId);
