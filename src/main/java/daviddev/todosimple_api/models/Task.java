@@ -2,6 +2,8 @@ package daviddev.todosimple_api.models;
 
 import org.hibernate.annotations.Collate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,6 +37,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+     @JsonBackReference
     private User user;
 
     @Column(name = "description", length = 255, nullable = false)

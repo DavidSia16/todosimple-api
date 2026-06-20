@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -48,6 +49,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
+      @JsonManagedReference
     private List<Task> tasks = new ArrayList<>();
 
     public List<Task> getTasks() {
