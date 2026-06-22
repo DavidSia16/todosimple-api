@@ -8,8 +8,6 @@ function show(tasks) {
     let tab = `<thead>
                     <th scope = "col">#</th>
                     <th scope = "col">Description</th>
-                    <th scope = "col">Username</th>
-                    <th scope = "col">User_Id</th>
                 </thead>`;
 
     for (let task of tasks) {
@@ -17,8 +15,6 @@ function show(tasks) {
             <tr>
                  <td scope="row">${task.id}</td>
                  <td>${task.description}</td>
-                 <td>${task.username}</td>
-                 <td>${task.user_id}</td>
             </tr>
 
         `;

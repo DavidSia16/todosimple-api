@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import daviddev.todosimple_api.models.User;
 import daviddev.todosimple_api.repository.UserRepository;
+import daviddev.todosimple_api.services.exceptions.DataBidingViolationException;
+import daviddev.todosimple_api.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
 
 
@@ -17,7 +19,7 @@ public class UserService {
 
     public User findById(Long id) {
         Optional<User> user = this.userRepository.findById(id);
-        return user.orElseThrow(() -> new RuntimeException
+        return user.orElseThrow(() -> new ObjectNotFoundException
         ("Usuario não encontrado! Id: " + id + " ,Tipo:" + User.class.getName()
         )); 
     }
@@ -41,7 +43,7 @@ public class UserService {
         try {
             this.userRepository.deleteById(id);
         } catch (Exception e) {
-            throw new RuntimeException("Não é possível excluir o usuário com id: " + id +
+            throw new DataBidingViolationException("Não é possível excluir o usuário com id: " + id +
              "ainda há entidades ");
         }
     }

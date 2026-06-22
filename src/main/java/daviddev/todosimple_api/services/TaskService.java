@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import daviddev.todosimple_api.models.Task;
 import daviddev.todosimple_api.models.User;
 import daviddev.todosimple_api.repository.TaskRepository;
+import daviddev.todosimple_api.services.exceptions.DataBidingViolationException;
+import daviddev.todosimple_api.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class TaskService {
@@ -20,7 +22,7 @@ public class TaskService {
 
     public Task findById(Long id) {
         Optional<Task> task = this.taskRepository.findById(id);
-        return task.orElseThrow(() -> new RuntimeException
+        return task.orElseThrow(() -> new ObjectNotFoundException
         ("Tarefa não encontrada! Id: " + id + " ,Tipo:" + Task.class.getName()
         ));
     }
@@ -51,7 +53,7 @@ public class TaskService {
         try {
             this.taskRepository.deleteById(id);
         } catch (Exception e){
-            throw new RuntimeException("Não foi possivel apagar pois está relacionada com uma entidade!");
+            throw new DataBidingViolationException("Não foi possivel apagar pois está relacionada com uma entidade!");
         }
     }
 
