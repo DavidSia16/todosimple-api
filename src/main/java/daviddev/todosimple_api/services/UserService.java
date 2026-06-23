@@ -2,10 +2,15 @@
 package daviddev.todosimple_api.services;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import daviddev.todosimple_api.models.User;
+import daviddev.todosimple_api.models.enums.ProfileEnum;
 import daviddev.todosimple_api.repository.UserRepository;
 import daviddev.todosimple_api.services.exceptions.DataBidingViolationException;
 import daviddev.todosimple_api.services.exceptions.ObjectNotFoundException;
@@ -16,6 +21,9 @@ import jakarta.transaction.Transactional;
 public class UserService {
     @Autowired
     private  UserRepository userRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User findById(Long id) {
         Optional<User> user = this.userRepository.findById(id);
@@ -28,6 +36,8 @@ public class UserService {
     public User create(User obj) {
         obj.setId(null);
         obj = this.userRepository.save(obj);
+        obj.setProfiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()));
+        obj.setPassword(this.bCryptPasswordEncoder.encode(obj.getPassword()));
         return obj;
     }
 
@@ -35,6 +45,8 @@ public class UserService {
     public User update(User obj) {
         User newObj = findById(obj.getId());
         newObj.setPassword(obj.getPassword());
+        newObj.setPassword(this.bCryptPasswordEncoder.encode(obj.getPassword()));
+        obj.setProfiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()));
         return this.userRepository.save(newObj);
     }
 
