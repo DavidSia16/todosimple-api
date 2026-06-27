@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import daviddev.todosimple_api.security.JWTAutheticationFilter;
 import daviddev.todosimple_api.security.JWTUtil;
 
 @Configuration
@@ -28,8 +29,10 @@ import daviddev.todosimple_api.security.JWTUtil;
 public class SecurityConfig {
    
     private AuthenticationManager  authenticationManager;
+
     @Autowired
     private UserDetailsService userDetailsService;
+
     @Autowired
     private JWTUtil jwtUtil;
 
@@ -46,19 +49,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+        http.cors().and().csrf().disable();
+
         AuthenticationManagerBuilder autheticationManagerBuilder = http
             .getSharedObject(AuthenticationManagerBuilder.class);
         autheticationManagerBuilder.userDetailsService(this.userDetailsService)
             .passwordEncoder(bCryptPasswordEncoder());
         this.authenticationManager = autheticationManagerBuilder.build();
 
-        http.cors().and().csrf().disable();
+      
 
         http.authorizeRequests(requests -> requests
 
             .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
             .requestMatchers(PUBLIC_MATCHERS).permitAll()
-            .anyRequest().authenticated());
+            .anyRequest().authenticated())
+            .authenticationManager(authenticationManager);
+
+        http.addFilter(new JWTAutheticationFilter(this.authenticationManager, this.jwtUtil));
+        http.addFilter(new JWTAutheticationFilter(this.authenticationManager,this.jwtUtil));
 
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

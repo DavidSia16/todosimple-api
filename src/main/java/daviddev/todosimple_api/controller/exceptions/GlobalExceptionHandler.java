@@ -1,5 +1,7 @@
 package daviddev.todosimple_api.controller.exceptions;
 
+import java.io.IOException;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,34 +21,37 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import daviddev.todosimple_api.services.exceptions.DataBidingViolationException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j(topic = "GLOBLAL_EXCEPTION_HANDLER")
 @RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler implements AuthenticationFailureHandler {
 
     @Value("${server.error.include-exception}")
     private boolean printStackTrace;
 
 
-@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-@Override
-protected ResponseEntity<Object> handleMethodArgumentNotValid(
-    MethodArgumentNotValidException methodArgumentNotValidException,
-    HttpHeaders headers,
-    HttpStatusCode status,
-    WebRequest request) {
-       ErrorResponse errorResponse = new ErrorResponse(
-            HttpStatus.UNPROCESSABLE_ENTITY.value(),
-            "Validation error. check 'errors' field for details!");
-        for(FieldError fieldError : methodArgumentNotValidException.getBindingResult().getFieldErrors()) {
-            errorResponse.addValidationError(fieldError.getField(), fieldError.getDefaultMessage());
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+        MethodArgumentNotValidException methodArgumentNotValidException,
+        HttpHeaders headers,
+        HttpStatusCode status,
+        WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                "Validation error. check 'errors' field for details!");
+            for(FieldError fieldError : methodArgumentNotValidException.getBindingResult().getFieldErrors()) {
+                errorResponse.addValidationError(fieldError.getField(), fieldError.getDefaultMessage());
+            }
+            return ResponseEntity.unprocessableEntity().body(errorResponse);
+            
         }
-        return ResponseEntity.unprocessableEntity().body(errorResponse);
-        
-    }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -123,6 +130,16 @@ protected ResponseEntity<Object> handleMethodArgumentNotValid(
             }
             return ResponseEntity.status(httpStatus).body(errorResponse);  
         }
+
+    @Override
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException exception) throws IOException, ServletException {
+        Integer status = HttpStatus.FORBIDDEN.value();
+        response.setStatus(status);
+        response.setContentType("/application/json");
+        ErrorResponse errorResponse = new ErrorResponse(status, "email ou senha invalidos. ");
+        response.getWriter().append(errorResponse.toJson());
+    }
 
     
     
