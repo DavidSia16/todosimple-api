@@ -2,6 +2,7 @@ package daviddev.todosimple_api.controller.exceptions;
 
 import java.io.IOException;
 
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.validation.FieldError;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import daviddev.todosimple_api.services.exceptions.AuthorizationException;
 import daviddev.todosimple_api.services.exceptions.DataBidingViolationException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -140,6 +143,35 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
         ErrorResponse errorResponse = new ErrorResponse(status, "email ou senha invalidos. ");
         response.getWriter().append(errorResponse.toJson());
     }
+
+    
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<Object> handleAccessDeniedException(
+       AccessDeniedException accessDeniedException,
+        WebRequest request) {
+        log.error("Authorization error", accessDeniedException);
+        String errorMessage = accessDeniedException.getMessage();
+        return buildErrorResponse(accessDeniedException, 
+                                   errorMessage , 
+                                    HttpStatus.FORBIDDEN, request);
+    }
+
+      @ExceptionHandler(AuthorizationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<Object> handleAuthorizationException(
+       AuthorizationException authorizationException,
+        WebRequest request) {
+        log.error("Authorization error", authorizationException);
+        String errorMessage = authorizationException.getMessage();
+        return buildErrorResponse(authorizationException, 
+                                   errorMessage , 
+                                    HttpStatus.UNAUTHORIZED, request);
+    }
+
+
+
+
 
     
     

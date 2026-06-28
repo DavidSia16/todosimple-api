@@ -1,17 +1,21 @@
 
 package daviddev.todosimple_api.services;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import daviddev.todosimple_api.models.User;
 import daviddev.todosimple_api.models.enums.ProfileEnum;
 import daviddev.todosimple_api.repository.UserRepository;
+import daviddev.todosimple_api.security.UserSpringSecurity;
+import daviddev.todosimple_api.services.exceptions.AuthorizationException;
 import daviddev.todosimple_api.services.exceptions.DataBidingViolationException;
 import daviddev.todosimple_api.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
@@ -26,6 +30,11 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User findById(Long id) {
+        UserSpringSecurity userSpringSecurity = authenticated();
+        if(!Objects.nonNull(userSpringSecurity )|| !userSpringSecurity.hasRole(ProfileEnum.ADMIN)
+             && !id.equals(userSpringSecurity.getId()));
+            throw new AuthorizationException("Acesso negado!");
+
         Optional<User> user = this.userRepository.findById(id);
         return user.orElseThrow(() -> new ObjectNotFoundException
         ("Usuario não encontrado! Id: " + id + " ,Tipo:" + User.class.getName()
@@ -57,6 +66,14 @@ public class UserService {
         } catch (Exception e) {
             throw new DataBidingViolationException("Não é possível excluir o usuário com id: " + id +
              "ainda há entidades ");
+        }
+    }
+
+    public static UserSpringSecurity authenticated() {
+        try {
+            return (UserSpringSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
+            return null;
         }
     }
 }
