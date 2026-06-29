@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import daviddev.todosimple_api.models.User;
-import daviddev.todosimple_api.models.User.CreateUser;
-import daviddev.todosimple_api.models.User.UpdateUser;
+import daviddev.todosimple_api.models.dto.USerUpdateDTO;
+import daviddev.todosimple_api.models.dto.UserCreateDto;
 import daviddev.todosimple_api.services.UserService;
 import jakarta.validation.Valid;
 
@@ -35,19 +35,19 @@ public class UserController {
     }
 
     @PostMapping
-    @Validated(CreateUser.class)
-    public ResponseEntity<Void> create (@Valid @RequestBody User obj) {
-        this.userService.create(obj);
+    public ResponseEntity<Void> create (@Valid @RequestBody UserCreateDto obj) {
+        User user = this.userService.fromDTO(obj);
+        User newUser = this.userService.create(user);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").
-        buildAndExpand(obj.getId()).toUri();
+        buildAndExpand(newUser.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
 
     @PutMapping("/{id}")
-    @Validated(UpdateUser.class)
-    public ResponseEntity<Void> update(@Valid @RequestBody User obj, @PathVariable Long id) {
+    public ResponseEntity<Void> update(@Valid @RequestBody USerUpdateDTO obj, @PathVariable Long id) {
         obj.setId(id);
-        this.userService.update(obj);
+        User user = this.userService.fromDTO(obj);
+        this.userService.update(user);
         return ResponseEntity.noContent().build();
     }
 

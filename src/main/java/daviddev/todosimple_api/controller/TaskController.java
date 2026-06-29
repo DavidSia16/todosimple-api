@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import daviddev.todosimple_api.models.Task;
+import daviddev.todosimple_api.models.projection.TaskProjection;
 import daviddev.todosimple_api.services.TaskService;
 import jakarta.validation.Valid;
 
@@ -41,8 +42,8 @@ public class TaskController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<Task>>findAllByUserId() {
-       List<Task> objs = this.taskService.findAllByUser();
+    public ResponseEntity<List<TaskProjection>>findAllByUserId() {
+       List<TaskProjection> objs = this.taskService.findAllByUser();
         return ResponseEntity.ok().body(objs);
 
     }

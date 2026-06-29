@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import daviddev.todosimple_api.models.User;
+import daviddev.todosimple_api.models.dto.USerUpdateDTO;
+import daviddev.todosimple_api.models.dto.UserCreateDto;
 import daviddev.todosimple_api.models.enums.ProfileEnum;
 import daviddev.todosimple_api.repository.UserRepository;
 import daviddev.todosimple_api.security.UserSpringSecurity;
@@ -19,6 +21,7 @@ import daviddev.todosimple_api.services.exceptions.AuthorizationException;
 import daviddev.todosimple_api.services.exceptions.DataBidingViolationException;
 import daviddev.todosimple_api.services.exceptions.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 
 @Service
@@ -75,5 +78,19 @@ public class UserService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public User fromDTO(@Valid UserCreateDto obj) {
+        User user = new User();
+        user.setUsername(obj.getUsername());
+        user.setPassword(obj.getPassword());
+        return user ;
+    }
+
+    public User fromDTO(@Valid USerUpdateDTO obj) {
+        User user = new User();
+        user.setId(obj.getId());
+        user.setPassword(obj.getPassword());
+        return user ;
     }
 }
