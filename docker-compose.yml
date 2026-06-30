@@ -15,7 +15,7 @@ services:
       - mysqldb
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: Ddo ockerfile
     container_name: todosimpleapp
     restart: on-failure
     env_file: ./.env
