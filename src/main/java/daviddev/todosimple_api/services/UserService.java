@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import daviddev.todosimple_api.models.User;
 import daviddev.todosimple_api.models.dto.USerUpdateDTO;
-import daviddev.todosimple_api.models.dto.UserCreateDto;
+import daviddev.todosimple_api.models.dto.UserCreateDTO;
 import daviddev.todosimple_api.models.enums.ProfileEnum;
 import daviddev.todosimple_api.repository.UserRepository;
 import daviddev.todosimple_api.security.UserSpringSecurity;
@@ -35,7 +35,7 @@ public class UserService {
     public User findById(Long id) {
         UserSpringSecurity userSpringSecurity = authenticated();
         if(!Objects.nonNull(userSpringSecurity )|| !userSpringSecurity.hasRole(ProfileEnum.ADMIN)
-             && !id.equals(userSpringSecurity.getId()));
+             && !id.equals(userSpringSecurity.getId()))
             throw new AuthorizationException("Acesso negado!");
 
         Optional<User> user = this.userRepository.findById(id);
@@ -80,7 +80,7 @@ public class UserService {
         }
     }
 
-    public User fromDTO(@Valid UserCreateDto obj) {
+    public User fromDTO(@Valid UserCreateDTO obj) {
         User user = new User();
         user.setUsername(obj.getUsername());
         user.setPassword(obj.getPassword());

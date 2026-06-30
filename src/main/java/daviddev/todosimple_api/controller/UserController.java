@@ -16,7 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import daviddev.todosimple_api.models.User;
 import daviddev.todosimple_api.models.dto.USerUpdateDTO;
-import daviddev.todosimple_api.models.dto.UserCreateDto;
+import daviddev.todosimple_api.models.dto.UserCreateDTO;
 import daviddev.todosimple_api.services.UserService;
 import jakarta.validation.Valid;
 
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create (@Valid @RequestBody UserCreateDto obj) {
+    public ResponseEntity<Void> create (@Valid @RequestBody UserCreateDTO obj) {
         User user = this.userService.fromDTO(obj);
         User newUser = this.userService.create(user);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").

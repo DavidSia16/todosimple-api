@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserCreateDto {
+public class UserCreateDTO {
 
     @NotBlank
     @Size(min = 2, max = 100)
