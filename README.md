@@ -1,6 +1,6 @@
 # TodoSimple API
 
-## 📌 Sobre o Projeto
+##  Sobre o Projeto
 
 A TodoSimple API é uma aplicação REST desenvolvida com Java e Spring Boot seguindo a arquitetura MVC (Model-View-Controller), criada com o objetivo de aprofundar conhecimentos em desenvolvimento back-end, APIs RESTful, persistência de dados e boas práticas de engenharia de software.
 
@@ -10,7 +10,7 @@ Mais do que uma simples API de tarefas, este projeto serve como laboratório de 
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 * Java 21
 * Spring Boot
@@ -25,7 +25,7 @@ Mais do que uma simples API de tarefas, este projeto serve como laboratório de 
 
 ---
 
-## 📂 Estrutura do Projeto
+##  Estrutura do Projeto
 
 O projeto foi organizado seguindo os princípios da arquitetura MVC:
 
@@ -50,7 +50,7 @@ src
 
 ---
 
-## ✅ Funcionalidades Implementadas
+##  Funcionalidades Implementadas
 
 ### Usuários
 
@@ -68,7 +68,7 @@ src
 
 ---
 
-## 🎯 Objetivos de Aprendizado
+##  Objetivos de Aprendizado
 
 Este projeto está sendo desenvolvido para consolidar conhecimentos em:
 
@@ -84,61 +84,16 @@ Este projeto está sendo desenvolvido para consolidar conhecimentos em:
 
 ---
 
-## 🔥 Roadmap Futuro
 
-As próximas versões deverão incluir:
 
-### Autenticação e Segurança
 
-* JWT Authentication
-* Spring Security
-* Controle de permissões por usuário
 
-### Gestão de Tarefas
-
-* CRUD completo de tarefas
-* Relacionamento User ↔ Tasks
-* Status das tarefas
-* Prioridades
-* Categorias
-
-### Qualidade de Software
-
-* Testes unitários com JUnit
-* Testes de integração
-* Cobertura de código
-
-### Observabilidade
-
-* Logs estruturados
-* Monitoramento com Actuator
-* Métricas da aplicação
-
-### DevOps
-
-* Docker
-* Docker Compose
-* Pipeline CI/CD com GitHub Actions
-* Deploy em ambiente cloud
-
-### Documentação
-
-* Swagger/OpenAPI
-* Coleção Postman
-
----
-
-## 📈 Evolução do Projeto
+##  Evolução do Projeto
 
 Este repositório representa minha jornada de aprendizado no ecossistema Java e Spring. Cada nova funcionalidade adicionada busca aproximar o projeto de um ambiente profissional, aplicando conceitos utilizados no mercado de desenvolvimento back-end.
 
 ---
 
-## 👨‍💻 Autor
-
-David Alves
-
-Desenvolvedor Java em formação, estudando continuamente tecnologias como Java, Spring Boot, APIs REST, Banco de Dados, Concorrência e Arquitetura de Software.
 
 GitHub: https://github.com/DavidSia16
 LinkedIn: https://www.linkedin.com/in/david-alves-2629b4341/
