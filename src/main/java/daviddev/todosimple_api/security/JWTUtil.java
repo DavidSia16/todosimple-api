@@ -39,13 +39,15 @@ public class JWTUtil {
         Claims claims = getClaims(token);
         if (Objects.nonNull(claims)) {
             String username = claims.getSubject();
-            Date expirationDate =  (Date) claims.getExpiration();
+            // Removido o cast "(Date)" para evitar conflito com java.sql.Date
+            java.util.Date expirationDate = claims.getExpiration();
             Date now = new Date(System.currentTimeMillis());
-            if(Objects.nonNull(username) && Objects.nonNull(expirationDate) && now.before(expirationDate)) {
+
+            if (Objects.nonNull(username) && Objects.nonNull(expirationDate) && now.before(expirationDate)) {
                 return true;
-            }   
+            }
         }
-         return false;
+        return false;
     }
 
     public String getUsername(String token) {

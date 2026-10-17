@@ -57,7 +57,10 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @GetMapping("/bem-vindo")
+    public ResponseEntity<String> home() {
+        return ResponseEntity.ok("API ToDo Simple rodando com sucesso! Utilize o Postman ou seu front-end para interagir com as rotas /user e /task.");
+    }
 
 
 

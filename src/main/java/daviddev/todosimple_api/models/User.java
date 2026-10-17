@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "user.TABLE_NAME")
+@Table(name = "user_table_name")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,8 +27,8 @@ import daviddev.todosimple_api.security.JWTUtil;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-   
-    private AuthenticationManager  authenticationManager;
+
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -37,55 +36,67 @@ public class SecurityConfig {
     @Autowired
     private JWTUtil jwtUtil;
 
-
-   private static final String[] PUBLIC_MATCHERS = {
-        "/"
-   };
+    private static final String[] PUBLIC_MATCHERS = {
+            "/",
+            "/login.html",
+            "/*.html",
+            "/css/**",
+            "/js/**",
+            "/user/bemvindo",
+            "/bemvindo",
+            "/login"
+    };
 
     private static final String[] PUBLIC_MATCHERS_POST = {
-        "/user",
-        "/login"
+            "/user",
+            "/login",
+            "/",
+            "/login.html",
+            "/*.html",
+            "/css/**",
+            "/js/**",
+            "/bemvindo"
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.cors().and().csrf().disable();
+        // Configuração atualizada para CORS e CSRF sem métodos obsoletos em cadeia
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable());
 
-        AuthenticationManagerBuilder autheticationManagerBuilder = http
-            .getSharedObject(AuthenticationManagerBuilder.class);
-        autheticationManagerBuilder.userDetailsService(this.userDetailsService)
-            .passwordEncoder(bCryptPasswordEncoder());
-        this.authenticationManager = autheticationManagerBuilder.build();
+        AuthenticationManagerBuilder authenticationManagerBuilder = http
+                .getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(this.userDetailsService)
+                .passwordEncoder(bCryptPasswordEncoder());
+        this.authenticationManager = authenticationManagerBuilder.build();
 
-      
-
-        http.authorizeRequests(requests -> requests
-
-            .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
-            .requestMatchers(PUBLIC_MATCHERS).permitAll()
-            .anyRequest().authenticated())
-            .authenticationManager(authenticationManager);
+        // Substituído authorizeRequests por authorizeHttpRequests
+        http.authorizeHttpRequests(requests -> requests
+                        .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
+                        .requestMatchers(PUBLIC_MATCHERS).permitAll()
+                        .anyRequest().authenticated())
+                .authenticationManager(authenticationManager);
 
         http.addFilter(new JWTAutheticationFilter(this.authenticationManager, this.jwtUtil));
-        http.addFilter(new JWTAuthorizationFilter(this.authenticationManager,this.jwtUtil , this.userDetailsService));
+        http.addFilter(new JWTAuthorizationFilter(this.authenticationManager, this.jwtUtil, this.userDetailsService));
 
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-         return http.build();
+        return http.build();
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
-        configuration.setAllowedMethods(Arrays.asList ("POST", "GET", "PUT", "DELETE"));
+        configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE"));
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
 }
