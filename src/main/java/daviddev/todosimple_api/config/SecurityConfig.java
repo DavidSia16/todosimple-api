@@ -61,7 +61,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        // Configuração atualizada para CORS e CSRF sem métodos obsoletos em cadeia
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable());
 
@@ -71,8 +70,9 @@ public class SecurityConfig {
                 .passwordEncoder(bCryptPasswordEncoder());
         this.authenticationManager = authenticationManagerBuilder.build();
 
-        // Substituído authorizeRequests por authorizeHttpRequests
         http.authorizeHttpRequests(requests -> requests
+                        // Liberação explícita e direta de arquivos estáticos, HTMLs e raiz
+                        .requestMatchers("/", "/index.html", "/login.html", "/register.html", "/*.html", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                         .requestMatchers(PUBLIC_MATCHERS).permitAll()
                         .anyRequest().authenticated())
@@ -90,6 +90,10 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
         configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE"));
+
+        // Libera e expõe o cabeçalho Authorization para o front-end conseguir ler o token JWT
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

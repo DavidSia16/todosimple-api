@@ -1,5 +1,8 @@
 const tokenKey = 'token';
 
+// Define a URL base automaticamente: se estiver no localhost usa a porta 8080, se estiver em produção (Render) usa vazio (mesmo domínio)
+const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:8080' : '';
+
 // Ao carregar a página, verifica se já está logado
 window.onload = function() {
     const token = localStorage.getItem(tokenKey);
@@ -16,7 +19,7 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
     const password = document.getElementById('password').value;
 
     try {
-        const response = await fetch('http://localhost:8080/login', {
+        const response = await fetch(`${API_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -28,6 +31,8 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
                 localStorage.setItem(tokenKey, token);
                 mostrarApp();
                 carregarTarefas();
+            } else {
+                alert('Token não encontrado na resposta do servidor.');
             }
         } else {
             alert('Usuário ou senha inválidos!');
@@ -55,7 +60,7 @@ function logout() {
 async function carregarTarefas() {
     const token = localStorage.getItem(tokenKey);
     try {
-        const response = await fetch('http://localhost:8080/task/user', {
+        const response = await fetch(`${API_URL}/task/user`, {
             method: 'GET',
             headers: { 'Authorization': token }
         });
@@ -100,7 +105,7 @@ document.getElementById('taskForm').addEventListener('submit', async (event) => 
     const token = localStorage.getItem(tokenKey);
 
     try {
-        const response = await fetch('http://localhost:8080/task/0', {
+        const response = await fetch(`${API_URL}/task/0`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -126,7 +131,7 @@ async function deletarTarefa(id) {
     const token = localStorage.getItem(tokenKey);
 
     try {
-        const response = await fetch(`http://localhost:8080/task/${id}`, {
+        const response = await fetch(`${API_URL}/task/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': token }
         });

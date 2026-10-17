@@ -1,14 +1,10 @@
 package daviddev.todosimple_api.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 
 @Configuration
-@EnableWebMvc
 public class Webconfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -22,6 +18,13 @@ public class Webconfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        // Redireciona a raiz e o login diretamente para os ficheiros estáticos correspondentes
+        registry.addViewController("/").setViewName("forward:/login.html");
+        registry.addViewController("/login").setViewName("forward:/login.html");
     }
     
 }
