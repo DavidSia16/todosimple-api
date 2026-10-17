@@ -1,20 +1,12 @@
-# Build
-FROM maven:3.9.11-eclipse-temurin-17 AS build
-
+# Estágio de Build (Compila o projeto usando Maven)
+FROM eclipse-temurin:17-jdk-jammy AS build
 WORKDIR /app
+COPY . .
+RUN ./mvnw clean package -DskipTests
 
-COPY pom.xml .
-COPY src ./src
-
-RUN mvn clean package -DskipTests
-
-# Runtime
-FROM eclipse-temurin:17-jre
-
+# Estágio de Execução (Roda a aplicação levemente)
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
-
-COPY --from=build /app/target/app.jar .
-
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "./app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
